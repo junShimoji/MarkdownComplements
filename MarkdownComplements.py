@@ -8,7 +8,7 @@ class MarkdownIndentComplementsCommand(sublime_plugin.TextCommand):
         pos = self.view.sel()
         cursor = pos[0].a
         # cursor is a number which represents the location info.
-        # print("cursor: ",cursor)
+        print("cursor: ",cursor)
         # investigating the location of previous "\n"
         i = 1
         pre_cursor          = cursor
@@ -20,7 +20,7 @@ class MarkdownIndentComplementsCommand(sublime_plugin.TextCommand):
             if(previousChar == '\n' or pre_cursor < 0):
                 break
             i += 1
-        # print("previous cursor's location: ",pre_cursor)
+        print("previous cursor's location: ",pre_cursor)
         if(pre_cursor >= 0):
             previous_line_str     = self.view.substr(self.view.line(pos[0].a-i))
             previous_header       = re.search('^ *[\+|\-|*]',previous_line_str)
@@ -44,57 +44,61 @@ class MarkdownIndentComplementsCommand(sublime_plugin.TextCommand):
             # print("header type of current line: ",current_header_str)
 
         # following line's investigation
-        j = 1
+        j = 0
         following_cursor    = cursor
         selfViewSize        = self.view.size()
         selfViewLine        = self.view.line(selfViewSize)
-        # print("selfViewLine: ",selfViewLine.a)
-        # print("cursor : ",cursor)
+        print("selfViewLine: ",selfViewLine.a)
+        print("cursor : ",cursor)
         # selfViewLine.a represents last line's location
         if(cursor < selfViewLine.a):
             while(True):
                 following_cursor += 1
-                afterChar = self.view.substr(pos[0].a-i+j)
-                if(afterChar == '\n' or following_cursor == 10000):
+                afterChar = self.view.substr(pos[0].a+j)
+                print("afterChar: ",afterChar)
+                if(afterChar == '\n' or following_cursor == 1000):
                     break
                 j += 1
-        # print("current_header: ",current_header)
-        # print("current_line_str: ",current_line_str)
-        # print("char num to next enter(j): ",j)
+        print("current_header: ",current_header)
+        print("current_line_str: ",current_line_str)
+        print("char num to next enter(j): ",j)
 
-        # rule1:  Current line has no header. And previous line has header.
-        # action: Input previous line's same header at current line.
+        ## rule1:  Current line has no header. And previous line has header.
+        ## action: Input previous line's same header at current line.
         if(not current_header) and (previous_header):
-            # print("rule1")
+            print("rule1")
             change_line = previous_line_str[:previous_indent_level] + " "
-            # print("change_line: ",change_line)
+            print("change_line: ",change_line)
             region = sublime.Region(pos[0].a-i+1, pos[0].a)
             self.view.insert(edit,pos[0].a-i+1,change_line)
-        # rule2:  Current line has no header. And previous line no has header.
-        # action: Change header type.
+        ## rule2:  Current line has no header. And previous line no has header.
+        ## action: Change header type.
         elif(current_header) and (not previous_header):
-            # print("rule2")
+            print("i: ",i)
+            print("j: ",j)
+            print("rule2")
+            print("indent level of current line: ",current_indent_level)
+            print("location of current line's header: ",current_header.end())
+            print("header type of current line: ",current_header_str)
             current_data         = current_line_str[current_header.end():]
-            # print("current_data ",current_data)
+            print("current_data ",current_data)
             if(current_header_str == "*"):
                 change_line = current_line_str[0:current_header.end()].replace("*","+") + current_data
             elif(current_header_str == "+"):
                 change_line = current_line_str[0:current_header.end()].replace("+","-") + current_data
             elif(current_header_str == "-"):
                 change_line = current_line_str[0:current_header.end()].replace("-","*") + current_data
-            region = sublime.Region(pos[0].a-i+1, pos[0].a-i+j)
+            region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
             self.view.erase(edit,region)
             self.view.insert(edit,pos[0].a,change_line)
-        # rule3: Previous line and current line have a header.
-        # action: Increment indent level.
+        ## rule3: Previous line and current line have a header.
+        ## action: Increment indent level.
         elif (current_header) and (previous_header):
-            # print("rule3")
+            print("rule3")
             change_line = "\t"
             self.view.insert(edit,pos[0].a-i+1,change_line)
-        # rule3: Previous line and current line have no header.
-        # action: Input a header at current line.
         elif (not current_header) and (not previous_header):
-            # print("rule4")
+            print("rule4")
             self.view.insert(edit,pos[0].a-i+1,"* ")
 
 class MarkdownIndentUpCommand(sublime_plugin.TextCommand):

@@ -15,24 +15,36 @@ The plugin requires Sublime Text 3.
     cd ~/"Library/Application Support/Sublime Text 3/Packages"
     git clone https://github.com/junShimoji/markdowncomplements.git MarkDownComplements
 
+### Windows:
+
+    cd ~/"Library/Application Support/Sublime Text 3/Packages"
+    git clone https://github.com/junShimoji/markdowncomplements.git MarkDownComplements
+
+### Linux:
+
+    cd ~/.config/sublime-text-3/Packages
+    git clone https://github.com/junShimoji/markdowncomplements.git MarkDownComplements
+
 ### Setting
 
-There are 3 main functions.
+There are 3 plug-ins.
 
-1. markdown_indent_complements
-If the line has a header(*,+ or -), it indent down. Else adds a header.
+1. markdown_indent_down
+If the focus line has a header(*,+ or -), then you can indent down.
+If the focus line has no header(*,+ or -), you can adds a header automatically.
 
 2. markdown_indent_up
-If the line has a header(*,+ or -), it indent up. Else does nothing.
+If the line has a header(*,+ or -), it indent up.
+If a header(*,+ or -) exists at left most, the header lotates like * -> + -> - * ....
 
 3. markdown_new_line
 It provides new line with a header.
 
 Use like as follows.
 
-Open Preferences > Key Bindings
+Open Preferences > Key Bindings and add like as follows
 
-    { "keys": ["ctrl+enter"], "command": "markdown_indent_complements" },
-    { "keys": ["shift+enter"], "command": "markdown_new_line" },
-    { "keys": ["ctrl+shift+enter"], "command": "markdown_indent_up" }
+    { "keys": ["ctrl+enter"], "command": "markdown_indent_down" },
+    { "keys": ["ctrl+shift+enter"], "command": "markdown_indent_up" },
+    { "keys": ["shift+enter"], "command": "markdown_new_line" }
 

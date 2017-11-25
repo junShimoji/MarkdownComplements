@@ -2,6 +2,8 @@
 
 This plugin provides functions to complement markdown header inputs or indent up/down.
 
+![gif](https://immense-headland-55656.herokuapp.com/markdownComplements.gif)
+
 ## Sublime Text Version
 
 The plugin requires Sublime Text 3.

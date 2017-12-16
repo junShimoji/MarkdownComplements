@@ -8,7 +8,7 @@ This plugin provides functions to complement markdown header inputs or indent up
 
 The plugin requires Sublime Text 3.
 
-## Instllation
+## Installation
 
 ### MacOS: 
 

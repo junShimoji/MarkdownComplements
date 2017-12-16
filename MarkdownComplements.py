@@ -5,6 +5,7 @@ import re
 class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownIndentDownCommand--------")
+        myTabSize = self.view.settings().get('tab_size')
         pos = self.view.sel()
         cursor = pos[0].a
         # cursor is a number which represents the location info.
@@ -87,6 +88,7 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
 class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownIndentUpCommand--------")
+        myTabSize = self.view.settings().get('tab_size')
         pos                 = self.view.sel()
         cursor              = pos[0].a
 
@@ -110,23 +112,14 @@ class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
             # print("indent level of current line: ",current_indent_level)
             # print("header type of current line: ",current_header_str)
 
-            if(current_indent_level > 4):
-                region = sublime.Region(pos[0].a-i+1, pos[0].a-i+5)
+            if(current_indent_level > myTabSize):
+                region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+myTabSize)
                 self.view.erase(edit,region)
-            else:
-                if(current_header_str == "*"):
-                    changed_header = current_line_str[0:current_header.end()].replace("*","+")
-                elif(current_header_str == "+"):
-                    changed_header = current_line_str[0:current_header.end()].replace("+","-")
-                elif(current_header_str == "-"):
-                    changed_header = current_line_str[0:current_header.end()].replace("-","*")
-                region = sublime.Region(pos[0].a-i+1, pos[0].a-i+2)
-                self.view.erase(edit,region)
-                self.view.insert(edit,pos[0].a-i+2,changed_header)
 
 class MarkdownNewLineCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownNewLineCommand--------")
+        myTabSize = self.view.settings().get('tab_size')
         pos                 = self.view.sel()
         cursor              = pos[0].a
 
@@ -144,10 +137,11 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
 class MarkdownRotateHeader(sublime_plugin.TextCommand):
     def run(self, edit):
         print("\n-------MarkdownRotateHeaderCommand--------")
+        myTabSize = self.view.settings().get('tab_size')
         pos                 = self.view.sel()
         cursor              = pos[0].a
 
-        # investigating the location of previous "\n"
+        ## investigating the location of previous "\n"
         i = 1
         pre_cursor = cursor
         while(True):
@@ -170,9 +164,6 @@ class MarkdownRotateHeader(sublime_plugin.TextCommand):
             changed_header = current_line_str[0:current_header.end()].replace("+","-")
         elif(current_header_str.find("-") >= 0):
             changed_header = current_line_str[0:current_header.end()].replace("-","*")
-
+        # print("changed_header: ",changed_header)
         region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
-        self.view.erase(edit,region)
-        self.view.insert(edit,pos[0].a,changed_header+" ")
-
-
+        self.view.replace(edit,region,changed_header+" ")

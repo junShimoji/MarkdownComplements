@@ -43,7 +43,7 @@ If a header(\*,+ or -) exists at left most, the header lotates like * -> + -> - 
 
 It provides new line with a header.
 
-Use like as follows.
+Use as follows.
 
 Open Preferences > Key Bindings and add like as follows
 

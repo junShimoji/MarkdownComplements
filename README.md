@@ -45,9 +45,11 @@ It provides new line with a header.
 
 Use as follows.
 
-Open Preferences > Key Bindings and add like as follows
+Open Preferences > Key Bindings and add as follows
 
     { "keys": ["ctrl+enter"], "command": "markdown_indent_down" },
     { "keys": ["ctrl+shift+enter"], "command": "markdown_indent_up" },
-    { "keys": ["shift+enter"], "command": "markdown_new_line" }
+    { "keys": ["command+enter"], "command": "markdown_new_line" },
+    { "keys": ["shift+enter"], "command": "markdown_rotate_header" }
+
 

@@ -156,37 +156,23 @@ class MarkdownRotateHeader(sublime_plugin.TextCommand):
             if(previousChar == '\n' or pre_cursor < 0):
                 break
             i += 1
-        print("i: ",i)
         current_line_str        = self.view.substr(self.view.line(pos[0].a))
         current_header          = re.search('^ *[\+|\-|*]',current_line_str)
         current_indent_level    = current_header.end()
         current_header_str      = current_line_str[:current_indent_level]
-        print("indent level of current line: ",current_indent_level)
-        print("location of current line's header: ",current_header.end())
-        print("header type of current line:",current_header_str)
+        # print("indent level of current line: ",current_indent_level)
+        # print("location of current line's header: ",current_header.end())
+        # print("header type of current line:",current_header_str)
 
         if(current_header_str.find("*") >= 0):
             changed_header = current_line_str[0:current_header.end()].replace("*","+")
-            print("changed_header: ",changed_header)
-            region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
-            self.view.erase(edit,region)
-            self.view.insert(edit,pos[0].a,changed_header+" ")
-            print("hoge")
-
-        if(current_header_str.find("+") >= 0):
+        elif(current_header_str.find("+") >= 0):
             changed_header = current_line_str[0:current_header.end()].replace("+","-")
-            print("changed_header: ",changed_header)
-            region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
-            self.view.erase(edit,region)
-            self.view.insert(edit,pos[0].a,changed_header+" ")
-            print("fuga")
-
-        if(current_header_str.find("-") >= 0):
+        elif(current_header_str.find("-") >= 0):
             changed_header = current_line_str[0:current_header.end()].replace("-","*")
-            print("changed_header: ",changed_header)
-            region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
-            self.view.erase(edit,region)
-            self.view.insert(edit,pos[0].a,changed_header+" ")
-            print("piyo")
+
+        region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
+        self.view.erase(edit,region)
+        self.view.insert(edit,pos[0].a,changed_header+" ")
 
 

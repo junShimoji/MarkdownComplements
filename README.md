@@ -17,27 +17,27 @@ The plugin requires Sublime Text 3.
 
 ### Windows:
 
-    cd ~/"Library/Application Support/Sublime Text 3/Packages"
+    cd "%APPDATA%\"Sublime Text 3\Packages"
     git clone https://github.com/junShimoji/markdowncomplements.git MarkDownComplements
 
 ### Settings
 
 There are 4 plug-ins.
 
-1. markdown_indent_down
+#### markdown_indent_down
 
 If the focus line has a header(\*,+ or -), then you can indent down.
 If the focus line has no header(\*,+ or -), you can adds a header automatically.
 
-2. markdown_indent_up
+#### markdown_indent_up
 
 If the line has a header(\*,+ or -), it indent up.
 
-3. markdown_new_line
+#### markdown_new_line
 
 It provides new line with a header.
 
-4. markdown_rotate_header
+#### markdown_rotate_header
 
 If a header(\*,+ or -) exists, the header lotates like \* -> + -> - * ....
 

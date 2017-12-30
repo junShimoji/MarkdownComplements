@@ -136,7 +136,7 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
         if(current_header):
             self.view.insert(edit,pos[0].a,"\n"+current_header_str+" ")
 
-class MarkdownRotateHeader(sublime_plugin.TextCommand):
+class MarkdownRotateListItem(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownRotateHeaderCommand--------")
         myTabSize = self.view.settings().get('tab_size')

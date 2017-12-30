@@ -10,6 +10,8 @@ The plugin requires Sublime Text 3.
 
 ## Installation
 
+You can clone this repository into your Sublime Text "Packages" folder.
+
 ### MacOS: 
 
     cd ~/"Library/Application Support/Sublime Text 3/Packages"

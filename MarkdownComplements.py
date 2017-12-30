@@ -67,11 +67,11 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         ## action: Input previous line's same header at indent level.
         if(not current_header) and (previous_header):
             # print("rule1")
-            change_line = previous_line_str[:previous_indent_level] + " "
+            # print("lstriped current_line_str: ",current_line_str.strip())
+            change_line = previous_line_str[:previous_indent_level] + " "+current_line_str.strip()
             # print("change_line: ",change_line)
-            region = sublime.Region(pos[0].a-i+1, pos[0].a)
-            self.view.erase(edit,region)
-            self.view.insert(edit,pos[0].a,change_line)
+            region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
+            self.view.replace(edit,region,change_line)
 
         ## rule2: Previous line and current line have a header.
         ## action: Indent down.
@@ -83,7 +83,9 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         ## action: Making a header(*)
         elif (not current_header) and (not previous_header):
             # print("rule3")
-            self.view.insert(edit,pos[0].a-i+1,"* ")
+            # print("lstriped current_line_str: ",current_line_str.strip())
+            region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
+            self.view.replace(edit,region,"* "+current_line_str.strip())
 
 class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -136,7 +138,7 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
 
 class MarkdownRotateHeader(sublime_plugin.TextCommand):
     def run(self, edit):
-        print("\n-------MarkdownRotateHeaderCommand--------")
+        # print("\n-------MarkdownRotateHeaderCommand--------")
         myTabSize = self.view.settings().get('tab_size')
         pos                 = self.view.sel()
         cursor              = pos[0].a

@@ -39,7 +39,7 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         if(current_header):
             current_indent_level    = current_header.end()
             current_header_str      = current_line_str[:current_indent_level]
-            print("indent level of current line: ",current_indent_level)
+            # print("indent level of current line: ",current_indent_level)
             # print("location of current line's header: ",current_header.end())
             # print("header type of current line: ",current_header_str)
 
@@ -127,13 +127,11 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
 
         current_line_str        = self.view.substr(self.view.line(pos[0].a))
         current_header          = re.search('^ *[\+|\-|*]',current_line_str)
-        current_indent_level    = current_header.end()
-        current_header_str      = current_line_str[:current_indent_level]
-        # print("indent level of current line: ",current_indent_level)
-        # print("location of current line's header: ",current_header.end())
-        # print("header type of current line: ",current_header_str)
-
         if(current_header):
+            current_indent_level    = current_header.end()
+            current_header_str      = current_line_str[:current_indent_level]
+            # print("indent level of current line: ",current_indent_level)
+            # print("header type of current line: ",current_header_str)
             self.view.insert(edit,pos[0].a,"\n"+current_header_str+" ")
 
 class MarkdownRotateListItem(sublime_plugin.TextCommand):
@@ -154,18 +152,18 @@ class MarkdownRotateListItem(sublime_plugin.TextCommand):
             i += 1
         current_line_str        = self.view.substr(self.view.line(pos[0].a))
         current_header          = re.search('^ *[\+|\-|*]',current_line_str)
-        current_indent_level    = current_header.end()
-        current_header_str      = current_line_str[:current_indent_level]
-        # print("indent level of current line: ",current_indent_level)
-        # print("location of current line's header: ",current_header.end())
-        # print("header type of current line:",current_header_str)
-
-        if(current_header_str.find("*") >= 0):
-            changed_header = current_line_str[0:current_header.end()].replace("*","+")
-        elif(current_header_str.find("+") >= 0):
-            changed_header = current_line_str[0:current_header.end()].replace("+","-")
-        elif(current_header_str.find("-") >= 0):
-            changed_header = current_line_str[0:current_header.end()].replace("-","*")
-        # print("changed_header: ",changed_header)
-        region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
-        self.view.replace(edit,region,changed_header+" ")
+        if(current_header):
+            current_indent_level    = current_header.end()
+            current_header_str      = current_line_str[:current_indent_level]
+            # print("indent level of current line: ",current_indent_level)
+            # print("location of current line's header: ",current_header.end())
+            # print("header type of current line:",current_header_str)
+            if(current_header_str.find("*") >= 0):
+                changed_header = current_line_str[0:current_header.end()].replace("*","+")
+            elif(current_header_str.find("+") >= 0):
+                changed_header = current_line_str[0:current_header.end()].replace("+","-")
+            elif(current_header_str.find("-") >= 0):
+                changed_header = current_line_str[0:current_header.end()].replace("-","*")
+            # print("changed_header: ",changed_header)
+            region = sublime.Region(pos[0].a-i+1, pos[0].a-i+1+current_indent_level+1)
+            self.view.replace(edit,region,changed_header+" ")

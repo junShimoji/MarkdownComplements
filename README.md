@@ -1,6 +1,7 @@
 # Markdown complements
 
 * This plugin provides functions to complement markdown a list item making/changing or indent up/down.
+* Need to set Key Bindings only.
 * No need to care extensions(.md,.mdown,.txt or like that).
 
 ![gif](https://immense-headland-55656.herokuapp.com/markdownComplements.gif)

@@ -5,7 +5,6 @@ import re
 class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownIndentDownCommand--------")
-        myTabSize = self.view.settings().get('tab_size')
         pos = self.view.sel()
         cursor = pos[0].a
         # cursor is a number which represents the location info.
@@ -128,7 +127,6 @@ class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
 class MarkdownNewLineCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownNewLineCommand--------")
-        myTabSize = self.view.settings().get('tab_size')
         pos                 = self.view.sel()
         cursor              = pos[0].a
 

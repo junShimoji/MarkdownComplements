@@ -70,8 +70,12 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
             # print("lstriped current_line_str: ",current_line_str.strip())
             change_line = previous_line_str[:previous_indent_level] + " "+current_line_str.strip()
             # print("change_line: ",change_line)
-            region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
-            self.view.replace(edit,region,change_line)
+            region = sublime.Region(pos[0].a-i+1, pos[0].a)
+            self.view.erase(edit,region)
+            self.view.insert(edit,pos[0].a,change_line)
+            # Don't use "replace" because the area is highlighted.
+            # region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
+            # self.view.replace(edit,region,change_line)
 
         ## rule2: Previous line and current line have a header.
         ## action: Indent down.
@@ -83,9 +87,12 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         ## action: Making a header(*)
         elif (not current_header) and (not previous_header):
             # print("rule3")
-            # print("lstriped current_line_str: ",current_line_str.strip())
+            print("lstriped current_line_str: ",current_line_str.strip())
             region = sublime.Region(pos[0].a-i+1, pos[0].a+j)
-            self.view.replace(edit,region,"* "+current_line_str.strip())
+            self.view.erase(edit,region)
+            self.view.insert(edit,pos[0].a,"* "+current_line_str.strip())
+            # Don't use "replace" because the area is highlighted.
+            # self.view.replace(edit,region,"* "+current_line_str.strip())
 
 class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
     def run(self, edit):

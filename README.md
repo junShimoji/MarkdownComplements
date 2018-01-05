@@ -1,9 +1,10 @@
 # Markdown complements
 
-* This plugin provides functions to complement markdown a list item making/changing or indent up/down.
+* This plugin provides functions to complement a markdown list item making/changing or indent up/down.
 * Need to set Key Bindings only.
-* No need to care extensions(.md,.mdown,.txt or like that).
+* No need to care extensions(.md,.mdown,.txt or something like that).
 * Can change list items manually not connected with indent levels.
+* Can prevent conflicting with Japanese Input method that selected characters are disappearing.
 
 ![gif](https://immense-headland-55656.herokuapp.com/markdownComplements.gif)
 
@@ -48,7 +49,7 @@ If a list item(\*,+ or -) exists, the list item lotates like \* -> + -> - * ....
 
 Use as follows.
 
-Open Preferences > Key Bindings and add as follows
+Open Preferences > Key Bindings and add as follows:
 
     { 
         "keys": ["ctrl+enter"], "command": "markdown_indent_down",
@@ -58,4 +59,4 @@ Open Preferences > Key Bindings and add as follows
     { "keys": ["command+enter"], "command": "markdown_new_line" },
     { "keys": ["shift+enter"], "command": "markdown_rotate_list_item" }
 
-
+Above "context" should be added if neceesary.

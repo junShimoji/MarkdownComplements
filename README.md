@@ -50,7 +50,10 @@ Use as follows.
 
 Open Preferences > Key Bindings and add as follows
 
-    { "keys": ["ctrl+enter"], "command": "markdown_indent_down" },
+    { 
+        "keys": ["ctrl+enter"], "command": "markdown_indent_down",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "text.html.markdown" }]
+    },
     { "keys": ["ctrl+shift+enter"], "command": "markdown_indent_up" },
     { "keys": ["command+enter"], "command": "markdown_new_line" },
     { "keys": ["shift+enter"], "command": "markdown_rotate_list_item" }

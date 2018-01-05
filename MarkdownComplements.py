@@ -10,7 +10,7 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         pre_cursor = self.view.line(pos[0]).begin()-1
         # print("pre_cursor: ",pre_cursor)
         ## cursor is a number which represents the end of the line location.
-        cursor = self.view.line(pos[0].a).end()
+        cursor = self.view.line(pos[0]).end()
         # print("cursor: ",cursor)
         previous_line_str   = ''
         previous_header     = ''
@@ -23,20 +23,18 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         # print("previous_header: ",previous_header)
         # print("previous_line_str: ",previous_line_str)
         ## current line's investigation
-        current_line_str                = self.view.substr(self.view.line(pos[0].a))
+        current_line_str                = self.view.substr(self.view.line(pos[0]))
         current_header                  = re.search('^ *[\+|\-|*]',current_line_str)
         ## if current line has any header(* or + or -)
         if(current_header):
             current_indent_level    = current_header.end()
             current_header_str      = current_line_str[:current_indent_level]
             # print("indent level of current line: ",current_indent_level)
-            # print("location of current line's header: ",current_header.end())
             # print("header type of current line: ",current_header_str)
         ## rule1:  Current line has no header. And previous line has header.
         ## action: Input previous line's same header at indent level.
         if(not current_header) and (previous_header):
             # print("rule1")
-            # print("lstriped current_line_str: ",current_line_str.strip())
             change_line = previous_line_str[:previous_indent_level] + " "+current_line_str.strip()
             # print("change_line: ",change_line)
             region = sublime.Region(pre_cursor+1, pos[0].a)
@@ -48,13 +46,11 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         elif (current_header):
             # print("rule2")
             change_line = "\t"
-            # self.view.insert(edit,pos[0].a-i+1,change_line)
             self.view.insert(edit,pre_cursor+1,change_line)
         ## rule3: Previous line and current line have no header.
         ## action: Making a header(*)
         elif (not current_header) and (not previous_header):
             # print("rule3")
-            # print("lstriped current_line_str: ",current_line_str.strip())
             region = sublime.Region(pre_cursor+1,cursor)
             # Don't use "replace" because the area is selected.
             self.view.erase(edit,region)
@@ -67,7 +63,7 @@ class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
         pos                 = self.view.sel()
         # investigating the begining location of current line
         bgn_cursor = self.view.line(pos[0]).begin()
-        current_line_str    = self.view.substr(self.view.line(pos[0].a))
+        current_line_str    = self.view.substr(self.view.line(pos[0]))
         current_header      = re.search('^ *[\+|\-|*]',current_line_str)
         # print("current_line_str: ",current_line_str)
         ## if current line has any header(* or + or -)
@@ -84,36 +80,25 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownNewLineCommand--------")
         pos                 = self.view.sel()
-        cursor              = pos[0].a
-
-        current_line_str        = self.view.substr(self.view.line(pos[0].a))
+        current_line_str        = self.view.substr(self.view.line(pos[0]))
         current_header          = re.search('^ *[\+|\-|*]',current_line_str)
         if(current_header):
             current_indent_level    = current_header.end()
             current_header_str      = current_line_str[:current_indent_level]
-            # print("indent level of current line: ",current_indent_level)
-            # print("header type of current line: ",current_header_str)
             self.view.insert(edit,pos[0].a,"\n"+current_header_str+" ")
 
 class MarkdownRotateListItem(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownRotateHeaderCommand--------")
         pos                 = self.view.sel()
-        ## investigating the begining location of current line
-        bgn_cursor = self.view.line(pos[0]).begin()
-        current_line_str        = self.view.substr(self.view.line(pos[0].a))
-        current_header          = re.search('^ *[\+|\-|*]',current_line_str)
-        if(current_header):
-            current_indent_level    = current_header.end()
-            current_header_str      = current_line_str[:current_indent_level]
-            # print("indent level of current line: ",current_indent_level)
-            # print("header type of current line:",current_header_str)
-            if(current_header_str.find("*") >= 0):
-                changed_header = current_line_str[0:current_header.end()].replace("*","+")
-            elif(current_header_str.find("+") >= 0):
-                changed_header = current_line_str[0:current_header.end()].replace("+","-")
-            elif(current_header_str.find("-") >= 0):
-                changed_header = current_line_str[0:current_header.end()].replace("-","*")
-            # print("changed_header: ",changed_header)
-            region = sublime.Region(bgn_cursor, bgn_cursor+current_indent_level)
-            self.view.replace(edit,region,changed_header)
+        bgn_cursor          = self.view.line(pos[0]).begin()
+        cursor              = self.view.line(pos[0]).end()
+        current_line_str    = self.view.substr(self.view.line(pos[0]))
+        if(re.search('^ *[\*]',current_line_str)):
+            changed_header = current_line_str.replace("*","+",1)
+        elif(re.search('^ *[\+]',current_line_str)):
+            changed_header = current_line_str.replace("+","-",1)
+        elif(re.search('^ *[\-]',current_line_str)):
+            changed_header = current_line_str.replace("-","*",1)
+        region = sublime.Region(bgn_cursor, cursor)
+        self.view.replace(edit,region,changed_header)

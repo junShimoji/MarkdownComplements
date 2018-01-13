@@ -1,4 +1,5 @@
 # Markdown complements
+Easy indenting of Markdown lists.
 
 * This plugin provides functions to complement a markdown list item making/changing or indent up/down.
 * Need to set Key Bindings only.

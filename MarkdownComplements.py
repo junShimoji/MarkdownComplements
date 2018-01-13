@@ -24,7 +24,8 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         # print("previous_line_str: ",previous_line_str)
         ## current line's investigation
         current_line_str                = self.view.substr(self.view.line(pos[0]))
-        current_header                  = re.search('^ *[\+|\-|*]',current_line_str)
+        # print("current_line_str: ",current_line_str)
+        current_header                  = re.search('^\s*[\+|\-|\*]',current_line_str)
         ## if current line has any header(* or + or -)
         if(current_header):
             current_indent_level    = current_header.end()
@@ -36,8 +37,9 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
         if(not current_header) and (previous_header):
             # print("rule1")
             change_line = previous_line_str[:previous_indent_level] + " "+current_line_str.strip()
+            # print("current_line_str.strip(): ",current_line_str.strip())
             # print("change_line: ",change_line)
-            region = sublime.Region(pre_cursor+1, pos[0].a)
+            region = sublime.Region(pre_cursor+1, cursor)
             ## Don't use "replace" because the area is selected.
             self.view.erase(edit,region)
             self.view.insert(edit,pos[0].a,change_line)
@@ -59,12 +61,15 @@ class MarkdownIndentDownCommand(sublime_plugin.TextCommand):
 class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownIndentUpCommand--------")
+        myTabtranslateTabsToSpaces = self.view.settings().get('translate_tabs_to_spaces')
         myTabSize = self.view.settings().get('tab_size')
+        # print("myTabtranslateTabsToSpaces: ",myTabtranslateTabsToSpaces)
+        # print("myTabSize: ",myTabSize)
         pos                 = self.view.sel()
         # investigating the begining location of current line
         bgn_cursor = self.view.line(pos[0]).begin()
         current_line_str    = self.view.substr(self.view.line(pos[0]))
-        current_header      = re.search('^ *[\+|\-|*]',current_line_str)
+        current_header      = re.search('^\s*[\+|\-|*]',current_line_str)
         # print("current_line_str: ",current_line_str)
         ## if current line has any header(* or + or -)
         if(current_header):
@@ -72,8 +77,14 @@ class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
             current_header_str      = current_line_str[:current_indent_level]
             # print("indent level of current line: ",current_indent_level)
             # print("header type of current line: ",current_header_str)
-            if(current_indent_level > myTabSize):
-                region = sublime.Region(bgn_cursor, bgn_cursor+myTabSize)
+            ## if translate_tabs_to_spaces is true and the position of the list item doesn't exist at top level, delete spaces of myTabSize.
+            if(myTabtranslateTabsToSpaces):
+                if(current_indent_level > myTabSize):
+                    region = sublime.Region(bgn_cursor, bgn_cursor+myTabSize)
+                    self.view.erase(edit,region)
+            ## if translate_tabs_to_spaces is false and the position of the list item doesn't exist at top level, delete 1 str(=\tª.
+            elif(current_indent_level > 1):
+                region = sublime.Region(bgn_cursor, bgn_cursor+1)
                 self.view.erase(edit,region)
 
 class MarkdownNewLineCommand(sublime_plugin.TextCommand):
@@ -81,7 +92,7 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
         # print("\n-------MarkdownNewLineCommand--------")
         pos                 = self.view.sel()
         current_line_str        = self.view.substr(self.view.line(pos[0]))
-        current_header          = re.search('^ *[\+|\-|*]',current_line_str)
+        current_header          = re.search('^\s*[\+|\-|*]',current_line_str)
         if(current_header):
             current_indent_level    = current_header.end()
             current_header_str      = current_line_str[:current_indent_level]
@@ -94,11 +105,11 @@ class MarkdownRotateListItem(sublime_plugin.TextCommand):
         bgn_cursor          = self.view.line(pos[0]).begin()
         cursor              = self.view.line(pos[0]).end()
         current_line_str    = self.view.substr(self.view.line(pos[0]))
-        if(re.search('^ *[\*]',current_line_str)):
+        if(re.search('^\s*[\*]',current_line_str)):
             changed_header = current_line_str.replace("*","+",1)
-        elif(re.search('^ *[\+]',current_line_str)):
+        elif(re.search('^\s*[\+]',current_line_str)):
             changed_header = current_line_str.replace("+","-",1)
-        elif(re.search('^ *[\-]',current_line_str)):
+        elif(re.search('^\s*[\-]',current_line_str)):
             changed_header = current_line_str.replace("-","*",1)
         region = sublime.Region(bgn_cursor, cursor)
         self.view.replace(edit,region,changed_header)

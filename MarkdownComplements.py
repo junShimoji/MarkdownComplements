@@ -91,12 +91,19 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print("\n-------MarkdownNewLineCommand--------")
         pos                 = self.view.sel()
-        current_line_str        = self.view.substr(self.view.line(pos[0]))
-        current_header          = re.search('^\s*[\+|\-|*]',current_line_str)
-        if(current_header):
-            current_indent_level    = current_header.end()
-            current_header_str      = current_line_str[:current_indent_level]
-            self.view.insert(edit,pos[0].a,"\n"+current_header_str+" ")
+        current_line_str     = [0 for i in range(len(pos))]
+        current_line_header  = [0 for i in range(len(pos))]
+        current_header       = [0 for i in range(len(pos))]
+        current_header_str   = [0 for i in range(len(pos))]
+        current_indent_level = [0 for i in range(len(pos))]
+
+        for index,item in enumerate(pos):
+            current_line_str[index]     = self.view.substr(self.view.line(pos[index]))
+            current_header[index]       = re.search('^\s*[\+|\-|*]',current_line_str[index])
+            if(current_header[index]):
+                current_indent_level[index]    = current_header[index].end()
+                current_header_str[index]      = current_line_str[index][:current_indent_level[index]]
+                self.view.insert(edit,pos[index].a,"\n"+current_header_str[index]+" ")
 
 class MarkdownRotateListItem(sublime_plugin.TextCommand):
     def run(self, edit):

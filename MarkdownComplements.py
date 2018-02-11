@@ -107,16 +107,21 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
 
 class MarkdownRotateListItem(sublime_plugin.TextCommand):
     def run(self, edit):
-        # print("\n-------MarkdownRotateHeaderCommand--------")
+        print("\n-------MarkdownRotateHeaderCommand--------")
         pos                 = self.view.sel()
-        bgn_cursor          = self.view.line(pos[0]).begin()
-        cursor              = self.view.line(pos[0]).end()
-        current_line_str    = self.view.substr(self.view.line(pos[0]))
-        if(re.search('^\s*[\*]',current_line_str)):
-            changed_header = current_line_str.replace("*","+",1)
-        elif(re.search('^\s*[\+]',current_line_str)):
-            changed_header = current_line_str.replace("+","-",1)
-        elif(re.search('^\s*[\-]',current_line_str)):
-            changed_header = current_line_str.replace("-","*",1)
-        region = sublime.Region(bgn_cursor, cursor)
-        self.view.replace(edit,region,changed_header)
+        print("len(pos): "+str(len(pos)))
+        bgn_cursor          = [0 for i in range(len(pos))]
+        cursor              = [0 for i in range(len(pos))]
+        current_line_str    = [0 for i in range(len(pos))]
+        for index,item in enumerate(pos):
+            bgn_cursor[index] = self.view.line(pos[index]).begin()
+            cursor[index]     = self.view.line(pos[index]).end()
+            current_line_str[index] = self.view.substr(self.view.line(pos[index]))
+            if(re.search('^\s*[\*]',current_line_str[index])):
+                changed_header = current_line_str[index].replace("*","+",1)
+            elif(re.search('^\s*[\+]',current_line_str[index])):
+                changed_header = current_line_str[index].replace("+","-",1)
+            elif(re.search('^\s*[\-]',current_line_str[index])):
+                changed_header = current_line_str[index].replace("-","*",1)
+            region = sublime.Region(bgn_cursor[index], cursor[index])
+            self.view.replace(edit,region,changed_header)

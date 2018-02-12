@@ -66,26 +66,32 @@ class MarkdownIndentUpCommand(sublime_plugin.TextCommand):
         # print("myTabtranslateTabsToSpaces: ",myTabtranslateTabsToSpaces)
         # print("myTabSize: ",myTabSize)
         pos                 = self.view.sel()
-        # investigating the begining location of current line
-        bgn_cursor = self.view.line(pos[0]).begin()
-        current_line_str    = self.view.substr(self.view.line(pos[0]))
-        current_header      = re.search('^\s*[\+|\-|*]',current_line_str)
-        # print("current_line_str: ",current_line_str)
-        ## if current line has any header(* or + or -)
-        if(current_header):
-            current_indent_level = current_header.end()
-            current_header_str      = current_line_str[:current_indent_level]
-            # print("indent level of current line: ",current_indent_level)
-            # print("header type of current line: ",current_header_str)
-            ## if translate_tabs_to_spaces is true and the position of the list item doesn't exist at top level, delete spaces of myTabSize.
-            if(myTabtranslateTabsToSpaces):
-                if(current_indent_level > myTabSize):
-                    region = sublime.Region(bgn_cursor, bgn_cursor+myTabSize)
+        ## investigating the begining location of current line
+        bgn_cursor           = [0 for i in range(len(pos))]
+        current_line_str     = [0 for i in range(len(pos))]
+        current_line_header  = [0 for i in range(len(pos))]
+        current_header       = [0 for i in range(len(pos))]
+
+        for index,item in enumerate(pos):
+            bgn_cursor[index] = self.view.line(pos[index]).begin()
+            current_line_str[index]    = self.view.substr(self.view.line(pos[index]))
+            current_header[index]      = re.search('^\s*[\+|\-|*]',current_line_str[index])
+            # print("current_line_str: ",current_line_str)
+            ## if current line has any header(* or + or -)
+            if(current_header[index]):
+                current_indent_level = current_header[index].end()
+                current_header_str      = current_line_str[index][:current_indent_level]
+                # print("indent level of current line: ",current_indent_level)
+                # print("header type of current line: ",current_header_str)
+                ## if translate_tabs_to_spaces is true and the position of the list item doesn't exist at top level, delete spaces of myTabSize.
+                if(myTabtranslateTabsToSpaces):
+                    if(current_indent_level > myTabSize):
+                        region = sublime.Region(bgn_cursor[index], bgn_cursor[index]+myTabSize)
+                        self.view.erase(edit,region)
+                ## if translate_tabs_to_spaces is false and the position of the list item doesn't exist at top level, delete 1 str(=\tª.
+                elif(current_indent_level > 1):
+                    region = sublime.Region(bgn_cursor[index], bgn_cursor[index]+1)
                     self.view.erase(edit,region)
-            ## if translate_tabs_to_spaces is false and the position of the list item doesn't exist at top level, delete 1 str(=\tª.
-            elif(current_indent_level > 1):
-                region = sublime.Region(bgn_cursor, bgn_cursor+1)
-                self.view.erase(edit,region)
 
 class MarkdownNewLineCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -107,7 +113,7 @@ class MarkdownNewLineCommand(sublime_plugin.TextCommand):
 
 class MarkdownRotateListItem(sublime_plugin.TextCommand):
     def run(self, edit):
-        print("\n-------MarkdownRotateHeaderCommand--------")
+        # print("\n-------MarkdownRotateHeaderCommand--------")
         pos                 = self.view.sel()
         print("len(pos): "+str(len(pos)))
         bgn_cursor          = [0 for i in range(len(pos))]

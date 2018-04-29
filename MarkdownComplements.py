@@ -252,7 +252,7 @@ class MdTableContents:
         self.present_indent_num   = 0
 
     def make_content_element(self):
-        self.itt  = -1
+        self.itt  = 0
         self.cursor_indent_level = 0
 
         for row in self.arry:
@@ -289,7 +289,7 @@ class MdTableContents:
         for i in range(0, len(self.content)):
             for j in range(0, int(self.longest_indent_level - len(self.content[i]))):
                 self.content[i].append('')
-
+        self.content.pop(0)
         return self.content
 
     # Add Body separator of Markdown

@@ -301,3 +301,33 @@ class MdTableContents:
             self.contentline += '|' + '|'.join(arry2dm[i]) + '|\n'
 
         return self.contentline
+
+
+class JsDocComplement(sublime_plugin.TextCommand):
+    def run(self, edit):
+        print("\n-------JsDocComplement--------")
+        pos     = self.view.sel()
+
+        for index, item in enumerate(pos):
+            current_line_str = self.view.substr(self.view.line(pos[index]))
+            result_line = re.search('^\s{0,}\/\*\*$', current_line_str)
+            print("current_line_str: " + current_line_str)
+
+            try:
+                if(result_line.end()):
+                    result_header = re.search('\/\*\*$', current_line_str)
+                    print("detected at " + str(result_header.start()))
+                    print(current_line_str.replace('/**', ' *'))
+                    self.view.insert(edit, pos[index].a, "\n" + current_line_str.replace('/**', ' * \n') + current_line_str.replace('/**', ' */'))
+                    self.view.run_command('goto_cursor_pos', {"point_str": pos[index].a -(len(current_line_str) + 1)})
+            except AttributeError:
+                self.view.insert(edit, pos[index].a, "\t")
+
+
+class GotoCursorPosCommand(sublime_plugin.TextCommand):
+    def run(self, edit, point_str):
+        point = int(point_str)
+        self.view.sel().clear()
+        region = sublime.Region(point)
+        self.view.sel().add(region)
+        self.view.show(point)
